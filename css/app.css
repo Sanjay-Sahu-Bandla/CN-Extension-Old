@@ -1,0 +1,39 @@
+body {
+  width: 450px;
+  margin: 10px;
+}
+
+.btn-primary {
+  background-color: #b500f4 !important;
+  border: 0 !important;
+}
+.btn-outline-primary {
+  background-color: #b500f40d !important;
+  border: #b500f4 !important;
+  color: #b500f4 !important;
+}
+
+.btn-primary:hover {
+  background-color: #8400b0 !important;
+}
+.btn-outline-primary:hover {
+  background-color: #8400b0 !important;
+  color: #fff !important;
+}
+
+.active {
+  background-color: #b500f4 !important;
+  color: white !important;
+}
+
+.no-content {
+  width: 100%;
+  background: #b500f40d !important;
+  padding: 20px;
+  border-radius: 5px;
+  color: black;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

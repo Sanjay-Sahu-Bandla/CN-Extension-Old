@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Content Notes",
+  "version": "1.0.0",
+  "description": "A Chrome Extension for Webpage Annotations",
+  "icons": {
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "permissions": ["contextMenus", "storage", "activeTab", "tabs"],
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "css": ["css/content-style.css"],
+      "js": ["js/content-script.js"],
+      "matches": ["https://*/*"],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["test1.png", "test2.png"],
+      "matches": ["https://*/*"]
+    }
+  ]
+}
