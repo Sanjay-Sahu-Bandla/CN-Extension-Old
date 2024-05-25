@@ -4,9 +4,9 @@ A Chrome Extension for Webpage Annotations.
 
 It is designed to enhance web browsing experience by capturing and organizing notes directly on webpages. It empowers to extract valuable information, add insights, and organize thoughts while interacting with online content.
 
-![Context Menu](https://github.com/Sanjay-Sahu-Bandla/Content-Notes/blob/master/images/screenshots/context-menu.png?raw=true)
+![Context Menu](https://github.com/Sanjay-Sahu-Bandla/Content-Notes/blob/main/images/screenshots/context-menu.png?raw=true)
 
-![Popup UI](https://github.com/Sanjay-Sahu-Bandla/Content-Notes/blob/master/images/screenshots/popup-ui.png?raw=true)
+![Popup UI](https://github.com/Sanjay-Sahu-Bandla/Content-Notes/blob/main/images/screenshots/popup-ui.png?raw=true)
 
 ## Features & Benefits
 
