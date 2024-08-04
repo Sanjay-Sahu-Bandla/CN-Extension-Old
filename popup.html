@@ -15,92 +15,47 @@
     <link rel="stylesheet" href="./css/app.css" />
   </head>
   <body>
-    <!-- <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link active"
-          id="pills-home-tab"
-          data-bs-toggle="pill"
-          data-bs-target="#pills-home"
-          type="button"
-          role="tab"
-          aria-controls="pills-home"
-          aria-selected="true"
-        >
-          Home
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="pills-profile-tab"
-          data-bs-toggle="pill"
-          data-bs-target="#pills-profile"
-          type="button"
-          role="tab"
-          aria-controls="pills-profile"
-          aria-selected="false"
-        >
-          Profile
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button
-          class="nav-link"
-          id="pills-contact-tab"
-          data-bs-toggle="pill"
-          data-bs-target="#pills-contact"
-          type="button"
-          role="tab"
-          aria-controls="pills-contact"
-          aria-selected="false"
-        >
-          Contact
-        </button>
-      </li>
-    </ul>
-
-    <div class="tab-content" id="pills-tabContent">
-      <div
-        class="tab-pane fade show active"
-        id="pills-home"
-        role="tabpanel"
-        aria-labelledby="pills-home-tab"
-      >
-        AA
+    <div id="guest">
+      <div class="text-center p-4">
+        <h3>Content Notes</h3>
+        <img id="guest-app-logo" src="images/icon.png" class="mt-3 mb-5" />
+        <h4>Effortless Annotations for Web Pages</h4>
+        <p class="text-secondary">
+          Easily highlight, annotate, and organize notes directly on web pages.
+          Enhance your productivity with our user-friendly Chrome extension,
+          designed for seamless note-taking and management.
+        </p>
+        <div>
+          <button
+            class="btn btn-outline-primary mx-auto px-4 py-2 rounded-pill"
+            id="login"
+          >
+            <i class="fa fa-g me-2"></i>
+            <span>Continue with Google</span>
+          </button>
+        </div>
       </div>
-      <div
-        class="tab-pane fade"
-        id="pills-profile"
-        role="tabpanel"
-        aria-labelledby="pills-profile-tab"
-      >
-        BBBB
-      </div>
-      <div
-        class="tab-pane fade"
-        id="pills-contact"
-        role="tabpanel"
-        aria-labelledby="pills-contact-tab"
-      >
-        CCCCCCCC
-      </div>
-    </div> -->
-    <div id="header" class="d-flex justify-content-around my-3">
-      <button
-        id="page-notes-btn"
-        class="btn btn-outline-primary rounded-pill px-5 shadow-sm fs-5 py-2"
-      >
-        Page Notes
-      </button>
-      <button
-        id="all-notes-btn"
-        class="btn btn-outline-primary rounded-pill px-5 shadow-sm fs-5 py-2"
-      >
-        All Notes
-      </button>
     </div>
-    <div id="notes-list"></div>
+    <div id="auth">
+      <div class="d-flex justify-content-around align-items-center my-3">
+        <button
+          id="page-notes-btn"
+          class="btn btn-outline-primary rounded-pill px-5 shadow-sm fs-5 py-2"
+        >
+          Page Notes
+        </button>
+        <button
+          id="all-notes-btn"
+          class="btn btn-outline-primary rounded-pill px-5 shadow-sm fs-5 py-2"
+        >
+          All Notes
+        </button>
+        <button id="logout" class="border btn btn-outline-danger btn-sm h-100">
+          <i class="fa fa-sign-out"></i>
+        </button>
+      </div>
+      <div id="notes-list"></div>
+    </div>
     <script type="text/javascript" src="js/popup.js"></script>
   </body>
 </html>

@@ -52,7 +52,7 @@ const highlightNotes = async () => {
   const result = await chrome.storage.local.get(["notesList"]);
   const notesList = result.notesList;
   const currentUrl = window.location.href;
-  const pageNotes = notesList.filter((item) => item.pageUrl === currentUrl);
+  const pageNotes = notesList && notesList.filter((item) => item.pageUrl === currentUrl);
   if (!pageNotes) return;
 
   const $box = document.querySelector("body");

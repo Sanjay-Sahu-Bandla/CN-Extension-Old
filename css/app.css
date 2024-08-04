@@ -37,3 +37,8 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+#guest-app-logo {
+  width: 100px;
+  height: 100px;
+}

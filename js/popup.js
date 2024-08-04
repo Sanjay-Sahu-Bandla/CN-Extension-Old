@@ -13,7 +13,7 @@ function displayNote(note) {
 
   const noteDescription = document.createElement("p");
   noteDescription.classList.add("card-text");
-  noteDescription.innerText = note.description;
+  noteDescription.innerHTML = note.content;
 
   const buttonContainer = document.createElement("div");
   buttonContainer.classList.add("d-flex", "justify-content-end");
@@ -23,7 +23,7 @@ function displayNote(note) {
   editButton.classList.add("btn", "btn-sm", "btn-outline-primary", "me-2");
   editButton.innerHTML = "<i class='fa fa-edit'></i>";
   editButton.addEventListener("click", async () => {
-    const newDescription = prompt(note.title, note.description);
+    const newDescription = prompt(note.title, note.content);
     if (!newDescription) {
       return;
     }
@@ -42,14 +42,15 @@ function displayNote(note) {
   deleteButton.classList.add("btn", "btn-sm", "btn-outline-danger");
   deleteButton.innerHTML = "<i class='fa fa-trash'></i>";
   deleteButton.addEventListener("click", async () => {
-    const result = await chrome.storage.local.get(["notesList"]);
-    let notesList = result.notesList;
-    notesList = notesList.filter((item) => item.title !== note.title);
+    const { accessToken } = await chrome.storage.local.get(["accessToken"]);
 
-    // Showing all pages notes
-    allNotesBtn.classList.add("active");
-    pageNotesBtn.classList.remove("active");
-    await chrome.storage.local.set({ notesList });
+    const deleteRes = fetch(`http://localhost:3000/api/notes/${note.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }).then((res) => res.json());
+    this.showPageNotes();
   });
 
   buttonContainer.appendChild(editButton);
@@ -65,8 +66,13 @@ function displayNote(note) {
 }
 
 async function populateNotesList(type = "page") {
-  const result = await chrome.storage.local.get(["notesList"]);
-  let notesList = [];
+  const { accessToken } = await chrome.storage.local.get(["accessToken"]);
+  const notesRes = await fetch("http://localhost:3000/api/notes", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }).then((response) => response.json());
+  let notesList = notesRes?.data ?? [];
   let currentUrl = "";
   notesListElement.innerHTML = "";
 
@@ -74,13 +80,9 @@ async function populateNotesList(type = "page") {
     var currentTab = tabs[0];
     currentUrl = currentTab.url;
 
-    if (result.notesList?.length) {
+    if (notesList.length) {
       if (type === "page") {
-        notesList = result.notesList.filter(
-          (item) => item.pageUrl === currentUrl
-        );
-      } else {
-        notesList = result.notesList;
+        notesList = notesList.filter((item) => item.webpageUrl === currentUrl);
       }
     }
 
@@ -122,3 +124,47 @@ function showPageNotes() {
 }
 
 showPageNotes();
+
+document.addEventListener("DOMContentLoaded", () => {
+  chrome.storage.local.get(["isAuthenticated", "user"], (result) => {
+    this.toggleUI(result?.user);
+  });
+  const loginButton = document.getElementById("login");
+  const logoutButton = document.getElementById("logout");
+
+  loginButton.addEventListener("click", () => {
+    chrome.runtime.sendMessage({ type: "authenticate" }, (response) => {
+      if (response.error) {
+      } else {
+        if (response.user) {
+          this.toggleUI(response.user);
+        }
+      }
+    });
+  });
+
+  logoutButton.addEventListener("click", () => {
+    chrome.storage.local.remove(["isAuthenticated", "token"], () => {
+      chrome.storage.local.set(
+        { isAuthenticated: false, token: null, user: null, accessToken: null },
+        () => {
+          this.toggleUI();
+        }
+      );
+    });
+  });
+});
+
+function toggleUI(userInfo = null) {
+  const guestSection = document.getElementById("guest");
+  const authSection = document.getElementById("auth");
+
+  if (userInfo) {
+    guestSection.style.display = "none";
+    authSection.style.display = "block";
+    this.showPageNotes();
+  } else {
+    guestSection.style.display = "block";
+    authSection.style.display = "none";
+  }
+}
