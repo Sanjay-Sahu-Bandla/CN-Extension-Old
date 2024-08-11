@@ -27,14 +27,19 @@ function displayNote(note) {
     if (!newDescription) {
       return;
     }
-    const result = await chrome.storage.local.get(["notesList"]);
-    let notesList = result.notesList;
-    notesList = notesList.map((item) =>
-      item.title === note.title
-        ? { ...note, description: newDescription }
-        : item
-    );
-    await chrome.storage.local.set({ notesList });
+    const { accessToken } = await chrome.storage.local.get(["accessToken"]);
+    await fetch(`http://localhost:3000/api/notes/${note.id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: newDescription,
+      }),
+    }).then((res) => res.json());
+    this.showPageNotes();
   });
 
   // Delete button functionality
@@ -44,12 +49,15 @@ function displayNote(note) {
   deleteButton.addEventListener("click", async () => {
     const { accessToken } = await chrome.storage.local.get(["accessToken"]);
 
-    const deleteRes = fetch(`http://localhost:3000/api/notes/${note.id}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    }).then((res) => res.json());
+    const deleteRes = await fetch(
+      `http://localhost:3000/api/notes/${note.id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    ).then((res) => res.json());
     this.showPageNotes();
   });
 
@@ -65,7 +73,7 @@ function displayNote(note) {
   notesListElement.appendChild(noteItem);
 }
 
-async function populateNotesList(type = "page") {
+async function loadRecords(type = "page") {
   const { accessToken } = await chrome.storage.local.get(["accessToken"]);
   const notesRes = await fetch("http://localhost:3000/api/notes", {
     headers: {
@@ -98,7 +106,7 @@ async function populateNotesList(type = "page") {
   });
 }
 
-chrome.storage.local.onChanged.addListener(populateNotesList);
+chrome.storage.local.onChanged.addListener(loadRecords);
 
 // Handling header buttons
 const pageNotesBtn = document.getElementById("page-notes-btn");
@@ -107,20 +115,20 @@ const allNotesBtn = document.getElementById("all-notes-btn");
 pageNotesBtn.addEventListener("click", async () => {
   pageNotesBtn.classList.add("active");
   allNotesBtn.classList.remove("active");
-  populateNotesList("page");
+  loadRecords("page");
 });
 
 allNotesBtn.addEventListener("click", async () => {
   allNotesBtn.classList.add("active");
   pageNotesBtn.classList.remove("active");
-  populateNotesList("all");
+  loadRecords("all");
 });
 
 // Showing notes for the active page
 function showPageNotes() {
   allNotesBtn.classList.remove("active");
   pageNotesBtn.classList.add("active");
-  populateNotesList("page");
+  loadRecords("page");
 }
 
 showPageNotes();

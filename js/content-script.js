@@ -1,21 +1,28 @@
 // Adding a note & Highlightig notes
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(async function (request) {
   if (request.type === "addNote") {
     const description = prompt(`Notes for ${request.title}`);
     if (!description) return;
 
-    chrome.storage.local.get(["notesList"]).then(({ notesList }) => {
-      const newNote = {
+    const { accessToken } = await chrome.storage.local.get(["accessToken"]);
+    await fetch(`http://localhost:3000/api/notes/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         title: request.title,
-        description,
-        pageUrl: request.pageUrl,
-      };
-      notesList = notesList ? [...notesList, newNote] : [newNote];
-      chrome.storage.local.set({ notesList }).then(() => {
-        highlightNotes();
-        addModals();
-      });
-    });
+        content: description,
+        website: window.location.origin,
+        webpageUrl: request.pageUrl,
+        labels: [],
+      }),
+    }).then((res) => res.json());
+
+    highlightNotes();
+    addModals();
   }
 });
 
@@ -49,11 +56,17 @@ const addModals = () => {
 };
 
 const highlightNotes = async () => {
-  const result = await chrome.storage.local.get(["notesList"]);
-  const notesList = result.notesList;
+  const { accessToken } = await chrome.storage.local.get(["accessToken"]);
+  const notesRes = await fetch("http://localhost:3000/api/notes", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  }).then((response) => response.json());
+  const notesList = notesRes?.data ?? [];
   const currentUrl = window.location.href;
-  const pageNotes = notesList && notesList.filter((item) => item.pageUrl === currentUrl);
-  if (!pageNotes) return;
+  const pageNotes =
+    notesList && notesList.filter((item) => item.webpageUrl === currentUrl);
+  if (!pageNotes || !pageNotes?.length) return;
 
   const $box = document.querySelector("body");
   let text = $box.innerHTML;
@@ -69,7 +82,7 @@ const highlightNotes = async () => {
     const regex = new RegExp(noteItem.title, "gi");
     text = text.replace(
       regex,
-      `<mark class="highlight-note" data-tooltip="${noteItem.description}">$&</mark>`
+      `<mark class="highlight-note" data-tooltip="${noteItem.content}">$&</mark>`
     );
   });
   text +=
